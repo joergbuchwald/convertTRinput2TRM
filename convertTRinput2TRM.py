@@ -13,6 +13,14 @@ if __name__ == "__main__":
     dim = len(model.tree.find("./processes/process/specific_body_force").text.split(" "))
     model.add_entry("./processes/process/process_variables",tag="displacement", text="displacement")
     model.remove_element(xpath="./processes/process/simplified_elasticity")
+    thermal_expansivities = model.tree.findall("./media/medium/phases/phase[type='Solid']/properties/property[name='thermal_expansivity']/value")
+    for thermal_expansivity in thermal_expansivities:
+        temp = thermal_expansivity.text
+        temp_list = temp.split(" ")
+        if len(temp_list) == 4:
+            thermal_expansivity.text = f"{temp_list[0]} {temp_list[3]}"
+        elif  len(temp_list) == 9:
+            thermal_expansivity.text = f"{temp_list[0]} {temp_list[4]}  {temp_list[8]}"
     media = model.tree.findall("./media/medium")
     for i, m in enumerate(media):
         #/phase[type='Solid']/property[name='youngs_modulus']/value
